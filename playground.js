@@ -5,8 +5,8 @@ let ctx = canvas.getContext("2d");
 ctx.beginPath();
 ctx.rect(20, 40, 50, 50); // na posição (20, 40) desenhe um quadro 
 ctx.fillStyle ="#ff0000";
-ctx.fill();
-ctx.closePath();
+ctx.fill(); // pinte o quadrado
+ctx.closePath(); // termine o quadrado
 
 ctx.beginPath();
 // no ponto (2040, 160), com raio 20, ângulo incial 0
