@@ -16,6 +16,44 @@ let paddleY = (canvas.height - paddleHeight) - 10;
 let rightPressed =  false;
 let leftPressed = false;
 
+//Pedras
+let brickRowCount = 3;
+let brickColumnCount = 5;
+let brickWidth = 75;
+let brickHeight = 20;
+let brickPadding = 10;
+let brickOffsetTop = 30;
+let brickOffsetLeft =30;
+
+let bricks = [];
+for(let c=0; c< brickColumnCount; c++){
+    bricks[c] = [];
+    for (let r = 0; r < brickRowCount; r++){
+        bricks[c][r] = {x: 0, y:0};
+    }
+}
+
+function drawBrick(brickX, brickY){
+    ctx.beginPath();
+    ctx.rect(brickX, brickY, brickWidth, brickHeight);
+    ctx.fillStyle = "#0095DD";
+    ctx.fill();
+    ctx.closePath();
+}
+
+function drawBricks(){
+    for (let c = 0; c < brickColumnCount; c++){
+        for(let r = 0; r < brickRowCount; r++){
+            let brickX = (c*(brickWidth+brickPadding)) + brickOffsetLeft;
+            let brickY = (r*(brickHeight+brickPadding)) + brickOffsetTop;
+            bricks[c][r].x = brickX;
+            bricks[c][r].y = brickY;
+            drawBrick(brickX, brickY);
+        }
+    }
+}
+
+
 function drawPaddle(){
 ctx.beginPath();
 ctx.rect(paddleX, paddleY, paddleWidth, paddleHeight);  
@@ -32,11 +70,12 @@ function drawBall() {
     ctx.closePath();
 }
 
-let interval = setInterval(draw, 10);
+
 function draw(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBall();
     drawPaddle();
+    drawBricks();
 
     // verifica se a bola sai na horizontal
     if(x + dx > canvas.width-ballRadius || x + dx < ballRadius){
@@ -45,7 +84,7 @@ function draw(){
     // verifica se a bola sai na vertical
     if(y + dy < ballRadius){
         dy = -dy; // inverte o sinal de dy
-    }else if(x > paddleX && x < paddleX + paddleY && y + ballRadius >= paddleY){
+    }else if(x > paddleX && x < paddleX + paddleWidth && y + ballRadius >= paddleY){
         dy = -dy;
     }else if(y + dy > canvas.height-ballRadius){
         alert ("Game Over!");
@@ -68,7 +107,7 @@ function draw(){
     x += dx;
     y += dy;
 }
-
+let interval = setInterval(draw, 10);
 
 function keyDownHandler(e){
     if(e.key == "Right" || e.key == "ArrowRight"){
