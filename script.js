@@ -29,10 +29,28 @@ let bricks = [];
 for(let c=0; c< brickColumnCount; c++){
     bricks[c] = [];
     for (let r = 0; r < brickRowCount; r++){
-        bricks[c][r] = {x: 0, y:0};
+        bricks[c][r] = {x: 0, y:0, visible: true};
     }
 }
 
+function brickCollisionDetection(){
+    for(let c= 0; c< brickColumnCount; c++){
+        for(let r= 0; r< brickRowCount; r++){
+            let brick =bricks[c][r];
+
+            if (brick.visible) {
+                if (brick.x < x && x < brick.x + brickWidth && brick.y < y && y < brick.y + brickHeight) {
+                  // colidiu
+                  dy = -dy;
+                  brick.visible = false;
+                }
+              }
+            
+        }
+    }
+}
+
+//desenhando as pedras 
 function drawBrick(brickX, brickY){
     ctx.beginPath();
     ctx.rect(brickX, brickY, brickWidth, brickHeight);
@@ -44,16 +62,19 @@ function drawBrick(brickX, brickY){
 function drawBricks(){
     for (let c = 0; c < brickColumnCount; c++){
         for(let r = 0; r < brickRowCount; r++){
-            let brickX = (c*(brickWidth+brickPadding)) + brickOffsetLeft;
-            let brickY = (r*(brickHeight+brickPadding)) + brickOffsetTop;
-            bricks[c][r].x = brickX;
-            bricks[c][r].y = brickY;
-            drawBrick(brickX, brickY);
+            if(bricks[c][r].visible){
+
+                let brickX = (c*(brickWidth+brickPadding)) + brickOffsetLeft;
+                let brickY = (r*(brickHeight+brickPadding)) + brickOffsetTop;
+                bricks[c][r].x = brickX;
+                bricks[c][r].y = brickY;
+                drawBrick(brickX, brickY);
+            }
         }
     }
 }
 
-
+//Desenhando a barra
 function drawPaddle(){
 ctx.beginPath();
 ctx.rect(paddleX, paddleY, paddleWidth, paddleHeight);  
@@ -62,6 +83,7 @@ ctx.fill();
 ctx.closePath(); 
 }
 
+//Desenhando a bola
 function drawBall() {
     ctx.beginPath();
     ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
@@ -70,11 +92,12 @@ function drawBall() {
     ctx.closePath();
 }
 
-
+//Desenho completo 
 function draw(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBall();
     drawPaddle();
+    brickCollisionDetection();
     drawBricks();
 
     // verifica se a bola sai na horizontal
@@ -109,6 +132,8 @@ function draw(){
 }
 let interval = setInterval(draw, 10);
 
+
+//Comandos do teclado para jogar
 function keyDownHandler(e){
     if(e.key == "Right" || e.key == "ArrowRight"){
         rightPressed= true;
