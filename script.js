@@ -24,7 +24,10 @@ let brickHeight = 20;
 let brickPadding = 10;
 let brickOffsetTop = 30;
 let brickOffsetLeft =30;
+
+// pontos e vidas
 let score = 0;
+let lives = 3;
 
 let bricks = [];
 for(let c=0; c< brickColumnCount; c++){
@@ -61,6 +64,12 @@ function drawScore() {
     ctx.font = "16px Arial";
     ctx.fillStyle = "#0095DD";
     ctx.fillText("Pontuação: " + score, 8, 20);
+}
+
+ function drawLives() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Vidas: " + lives, canvas.width - 65, 20);
   }
 
 //desenhando as pedras 
@@ -112,6 +121,7 @@ function draw(){
     drawPaddle();
     brickCollisionDetection();
     drawScore();
+    drawLives();
     drawBricks();
 
     // verifica se a bola sai na horizontal
@@ -124,9 +134,18 @@ function draw(){
     }else if(x > paddleX && x < paddleX + paddleWidth && y + ballRadius >= paddleY){
         dy = -dy;
     }else if(y + dy > canvas.height-ballRadius){
-        alert ("Game Over!");
-        document.location.reload();
-        clearInterview(interval);
+        lives--; // Perde vidas
+        if(lives== 0){
+            alert ("Game Over!");
+            document.location.reload();
+            clearInterview(interval);
+        }else{ // Reseta o estado da bola e da barra 
+             x = canvas.width / 2; // inicial horizontal
+             y = canvas.height - 35; // inicial vertical
+             dx = 2; // variação horizontal
+             dy = -2; // variação vertical
+             paddleX = (canvas.width - paddleWidth) / 2;
+        }
     }
 
     if(rightPressed){
