@@ -24,6 +24,7 @@ let brickHeight = 20;
 let brickPadding = 10;
 let brickOffsetTop = 30;
 let brickOffsetLeft =30;
+let score = 0;
 
 let bricks = [];
 for(let c=0; c< brickColumnCount; c++){
@@ -43,12 +44,24 @@ function brickCollisionDetection(){
                   // colidiu
                   dy = -dy;
                   brick.visible = false;
+                  score++;
+                  if(score==brickRowCount*brickColumnCount){
+                    alert("Você Venceu, Parabéns!");
+                    document.location.reload();
+                    clearInterval(interval);
+                  }
                 }
               }
             
         }
     }
 }
+
+function drawScore() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Pontuação: " + score, 8, 20);
+  }
 
 //desenhando as pedras 
 function drawBrick(brickX, brickY){
@@ -98,6 +111,7 @@ function draw(){
     drawBall();
     drawPaddle();
     brickCollisionDetection();
+    drawScore();
     drawBricks();
 
     // verifica se a bola sai na horizontal
@@ -152,6 +166,14 @@ function keyUpHandler(e){
     }
 }
 
+function mouseMoveHandler(e){
+    var relativeX = e.clientX - canvas.offsetLeft;
+    if (relativeX > 0 && relativeX < canvas.width){
+        paddleX = relativeX - paddleWidth / 2;
+    }
+}
+
 //adiciona evento de controle do teclado 
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
+document.addEventListener("mousemove", mouseMoveHandler, false);
